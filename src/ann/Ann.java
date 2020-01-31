@@ -41,10 +41,10 @@ public class Ann
 	 * @param output desired output data values.
 	 * @throws InputOutputSizeException output data size is different from the number of output nodes.
 	 */
-	private void backProp(ArrayList<Double> output) throws InputOutputSizeException
+	private void backProp(Double[] output) throws InputOutputSizeException
 	{
-		if(outputLayer.nodes.size() != output.size())
-			throw new InputOutputSizeException("Size of output data["+output.size()+"] is different from the number of output nodes["+outputLayer.nodes.size()+"]");
+		if(outputLayer.nodes.size() != output.length)
+			throw new InputOutputSizeException("Size of output data["+output.length+"] is different from the number of output nodes["+outputLayer.nodes.size()+"]");
 		
 		for (int i = layers.size()-1; i >= 0; i--)
 		{
@@ -238,8 +238,7 @@ public class Ann
 	 */
 	private void doBackPropagation(Double... ds) throws InputOutputSizeException
 	{
-		ArrayList<Double> target = new ArrayList<Double>(Arrays.asList(ds));
-		this.backProp(target);
+		this.backProp(ds);
 	}
 
 	/**
@@ -295,10 +294,7 @@ public class Ann
 
 		for (int i = 0; i < input.length; i++)//get the number for the current input data/node.
 		{
-			Double 	inData = input[i];
-			Node	inNode = inputLayer.nodes.get(i);
-
-			inNode.inputToNode(inData);
+			inputLayer.nodes.get(i).inputToNode(input[i]);
 		}
 
 		//Start the input data propagation:

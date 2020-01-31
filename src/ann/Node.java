@@ -10,6 +10,9 @@ public class Node
 	double output;
 	double deltaValue;
 	double prevOutput;
+	double activation = 0;
+	ArrayList<Arc> inArcs = null;
+	ArrayList<Arc> outArcs = null;
 
 	public Node(Layer parent)
 	{
@@ -18,20 +21,17 @@ public class Node
 	
 	public void checkNode()
 	{
-		double s = 0;
-		Node pn = null;
-		for(Arc a : getInArcs())
+		activation = 0;
+		if(inArcs == null) getInArcs();
+		//Node pn = null;
+		for(Arc a : inArcs)
 		{
-			double weight = a.currentWeight;
-			pn = a.preNode;
-			double al = a.preNode.output;
-
-			s = s + (weight * al);
+			//pn = a.preNode;
+			activation = activation + (a.currentWeight * a.preNode.output);
 		}
 		
 		//System.out.println("NodeData: "+this+" "+sigmoid(s)+" pren:"+pn);
-
-		output = sigmoid(s);
+		output = sigmoid(activation);
 	}
 	
 	public void inputToNode(double v)
@@ -42,7 +42,7 @@ public class Node
 	
 	public ArrayList<Arc> getInArcs()
 	{
-		ArrayList<Arc> inArcs = new ArrayList<Arc>();
+		inArcs = new ArrayList<Arc>();
 		for(Link l : this.parentLayer.enteringLinks)
 		{
 			for (Arc arc : l.arcs)
@@ -56,7 +56,7 @@ public class Node
 
 	public ArrayList<Arc> getOutArcs()
 	{
-		ArrayList<Arc> outArcs = new ArrayList<Arc>();
+		outArcs = new ArrayList<Arc>();
 		for(Link l : this.parentLayer.exitingLinks)
 		{
 			for (Arc arc : l.arcs)

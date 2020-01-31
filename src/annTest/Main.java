@@ -19,7 +19,7 @@ public class Main
 			System.out.println("Starting training...");
 			double targetError = 0.0001;
 			double input;
-			for (int i = 0; i < 50000; i++)
+			for (int i = 0; i < 500000; i++)
 			{
 				input = Math.random()*Math.PI*2; 			// input = random values from [0-4PI]
 				net.trainInput(input/(Math.PI*2)); 			// normalize input to [0-1]

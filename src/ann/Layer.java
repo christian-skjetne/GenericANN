@@ -14,7 +14,7 @@ public class Layer
 	boolean quiescentMode 	= true;
 	boolean active 			= true;
 	int 	settlingRounds 	= 100;
-	int actFunction = 1;
+	int 	actFunction 	= 1;
 	
 	final static int SIGMOID = 1;
 	
@@ -23,7 +23,7 @@ public class Layer
 		this.name = name;
 	}
 
-	public void updateDeltaValues(ArrayList<Double> target)
+	public void updateDeltaValues(Double[] target)
 	{
 		//clear old delta values
 		for (Node n : nodes)
@@ -39,12 +39,12 @@ public class Layer
 			{
 				vals[i++] = n.output;
 				
-				double desiredActLevel = target.get(nodes.indexOf(n));
+				double desiredActLevel = target[nodes.indexOf(n)];
 				n.deltaValue = n.derivative(n.output) * (desiredActLevel-n.output);
 			}
 			double error = 0;
-			for (int j = 0; j < target.size(); j++) {
-				double err = Math.pow(vals[j] - target.get(j), 2);
+			for (int j = 0; j < target.length; j++) {
+				double err = Math.pow(vals[j] - target[j], 2);
 				error += err;
 			}
 			Ann.lastRunError=error;
@@ -52,10 +52,12 @@ public class Layer
 		}
 		else//hidden or input layer
 		{
+			double sum = 0;
 			for (Node n : nodes)
 			{
-				double sum = 0;
-				for (Arc a : n.getOutArcs())
+				sum = 0;
+				if(n.outArcs == null) n.getOutArcs();
+				for (Arc a : n.outArcs)
 				{
 					sum += a.postNode.deltaValue * a.currentWeight; 
 				}
@@ -71,8 +73,7 @@ public class Layer
 		{
 			for (Arc arc : l.arcs)
 			{
-				double delta = l.learningRate * arc.preNode.output * arc.postNode.deltaValue;
-				arc.currentWeight += delta;
+				arc.currentWeight += l.learningRate * arc.preNode.output * arc.postNode.deltaValue;
 			}
 			
 		}
