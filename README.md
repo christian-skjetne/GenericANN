@@ -1,2 +1,2 @@
 # GenericANN
-Pure JAVA artificial neural network implementation
+Pure JAVA artificial neural network implementation.
