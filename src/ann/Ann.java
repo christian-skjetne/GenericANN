@@ -17,9 +17,22 @@ public class Ann
 	private Layer outputLayer;
 	public static double lastRunError = 1;
 
+	/**
+	 * Constructor
+	 */
 	public Ann()
 	{
 
+	}
+
+	/**
+	 * Constructor that creates a complete network based on the file given as input.
+	 * 
+	 * @param pathToFile Neural network definition file
+	 */
+	public Ann(String pathToFile)
+	{
+		this.createNet(Ann.readFileAsString(pathToFile));;
 	}
 
 	/**
@@ -99,7 +112,7 @@ public class Ann
 		ONE TO ONE TOPOLOGY = 2 </br>
 		STOCHASTIC TOPOLOGY = 3 </br>
 		TRIANGULAR TOPOLOGY = 4 </br></br>
-		Not all features have been fully implemented</br>
+		Not all features have been implemented</br>
 	 * 
 	 * @param file
 	 */
@@ -192,6 +205,8 @@ public class Ann
 
 	/**
 	 * Prints out the last values stored in the output nodes of the network.
+	 * 
+	 * @param decimals number of decimals to include in the print out.
 	 */
 	public void printAnnRes(int decimals)
 	{
@@ -201,6 +216,19 @@ public class Ann
 			System.out.printf("[%."+decimals+"f] ",n.output);
 		}
 		System.out.println();
+	}
+
+	/**
+	 * Prints out the last values stored in the output nodes of the network. (minimum output)
+	 * 
+	 * @param decimals number of decimals to include in the print out.
+	 */
+	public void printMinimumAnnRes(int decimals)
+	{
+		for (Node n : layers.get(layers.size()-1).nodes)
+		{
+			System.out.printf("%."+decimals+"f ",n.output);
+		}
 	}
 
 	/**
@@ -296,12 +324,27 @@ public class Ann
 	}
 
 	/**
+	 * Runs the ANN on the given data set and prints the results (prints only the minimum of results).
+	 * 
+	 * @param input the input for the network.
+	 * @throws InputOutputSizeException input data size is different from the number of input nodes.
+	 */
+	public void runMinAnn(int decimals, Double... input) throws InputOutputSizeException
+	{
+		feedAnn(input);
+		printMinimumAnnRes(decimals);
+	}
+
+	/**
 	 * Reads in a text file and outputs it as a String object for parsing
+	 * 
+	 * TODO: propagate exceptions
 	 * 
 	 * @param filePath path to the text file
 	 * @return String representation of the text file.
 	 */
-	public static String readFileAsString(String filePath){
+	public static String readFileAsString(String filePath)
+	{
 		byte[] buffer = new byte[(int) new File(filePath).length()];
 		BufferedInputStream f = null;
 		try {

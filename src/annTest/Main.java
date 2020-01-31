@@ -3,59 +3,49 @@ package annTest;
 import ann.Ann;
 import ann.InputOutputSizeException;
 
+/**
+ * Creates an ANN based on a template and trains it to calculate Sin(x)
+ */
 public class Main
 {
 	public static void main(String[] args)
 	{
-		String path = "..\\annBig.txt";
+		String path = "annBig.txt";
 
-		Ann net = new Ann();
-
-		String file = Ann.readFileAsString(path);
-
-
-		net.createNet(file);
+		Ann net = new Ann(path);
 
 		try
 		{
 			System.out.println("Starting training...");
-			double targetError = .02;
-			for (int i = 0; i < 10000; i++)
+			double targetError = 0.0001;
+			double input;
+			for (int i = 0; i < 50000; i++)
 			{
-
-				net.trainAnnOnCase(new Double[]{0.0,0.0,0.0}, new Double[]{1.0,1.0});
-				net.trainAnnOnCase(new Double[]{0.0,0.0,1.0}, new Double[]{0.5,1.0});
-				net.trainAnnOnCase(new Double[]{0.0,1.0,0.0}, new Double[]{0.0,1.0});
-				net.trainAnnOnCase(new Double[]{0.0,1.0,1.0}, new Double[]{0.0,1.0});
-				net.trainAnnOnCase(new Double[]{1.0,0.0,0.0}, new Double[]{1.0,0.5});
-				net.trainAnnOnCase(new Double[]{1.0,0.0,1.0}, new Double[]{1.0,0.0});
-				net.trainAnnOnCase(new Double[]{1.0,1.0,0.0}, new Double[]{1.0,0.0});
-				//or you could use this format:
-				net.trainInput(1.0,1.0,1.0);
-				net.trainOutput(1.0,0.0);
+				input = Math.random()*Math.PI*2; 			// input = random values from [0-4PI]
+				net.trainInput(input/(Math.PI*2)); 			// normalize input to [0-1]
+				net.trainOutput((Math.sin(input)+1)/2.0); 	// expected result = sine function normalized to [0-1]
 				
+				//You can also use this format for training input:
+				//net.trainAnnOnCase(new Double[]{1.0,1.0,0.0}, new Double[]{1.0,0.0});
+				
+				/*
 				if(Ann.lastRunError*100 < targetError)
 				{
+					// Using this kind of break point is not always a good idea because 
+					// the ann can randomly get low error on one specific input, but it may not have converged yet
+					// A gliding average can be used to mitigate this somewhat.
 					System.out.println("Error <"+targetError+"% after "+i+" runs.\n");
 					break;
-				}
+				}*/
 			}
-			net.runAnn(2, 0.0,0.0,0.0);
-			System.out.println("EX: 1,1");
-			net.runAnn(2, 0.0,0.0,1.0);
-			System.out.println("EX: .5,1");
-			net.runAnn(2, 0.0,1.0,0.0);
-			System.out.println("EX: 0,1");
-			net.runAnn(2, 0.0,1.0,1.0);
-			System.out.println("EX: 0,1");
-			net.runAnn(2, 1.0,0.0,0.0);
-			System.out.println("EX: 1,.5");
-			net.runAnn(2, 1.0,0.0,1.0);
-			System.out.println("EX: 1,0");
-			net.runAnn(2, 1.0,1.0,0.0);
-			System.out.println("EX: 1,0");
-			net.runAnn(2, 1.0,1.0,1.0);
-			System.out.println("EX: 1,0");
+
+			//print result (plot with: http://www.alcula.com/calculators/statistics/scatter-plot/)
+			for(double i=0;i<Math.PI*2;i+=0.1)
+			{
+				System.out.printf("%.2f,",i);
+				net.runMinAnn(2, i/(Math.PI*2));
+				System.out.println();
+			}	
 			
 			System.out.println("Last run error: "+Ann.lastRunError*100+"%");
 		}
