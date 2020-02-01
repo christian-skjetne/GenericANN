@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -16,6 +15,11 @@ public class Ann
 	private Layer inputLayer;
 	private Layer outputLayer;
 	public static double lastRunError = 1;
+
+	int ia = 0;
+	int sa = 0;
+	int ib = 0;
+	int sb = 0;
 
 	/**
 	 * Constructor
@@ -298,11 +302,13 @@ public class Ann
 		}
 
 		//Start the input data propagation:
-		for (Layer lr : this.layers)
+		sa = this.layers.size();
+		for (ia = 0; ia<sa; ia++) //(Layer lr : this.layers)
 		{
-			if(lr.exitingLinks.size() == 0) break;//reached output
-			for(Link l : lr.exitingLinks)
-				l.propagate();
+			if(this.layers.get(ia).exitingLinks.size() == 0) break;//reached output
+			sb = this.layers.get(ia).exitingLinks.size();
+			for (ib = 0; ib<sb; ib++) //(Link l : this.layers.get(ia).exitingLinks)
+				this.layers.get(ia).exitingLinks.get(ib).propagate();
 
 		}
 	}

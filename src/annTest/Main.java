@@ -19,14 +19,15 @@ public class Main
 			System.out.println("Starting training...");
 			double targetError = 0.0001;
 			double input;
-			for (int i = 0; i < 500000; i++)
+			int runs = 1000000;
+			for (int i = 0; i < runs; i++)
 			{
 				input = Math.random()*Math.PI*2; 			// input = random values from [0-4PI]
 				net.trainInput(input/(Math.PI*2)); 			// normalize input to [0-1]
 				net.trainOutput((Math.sin(input)+1)/2.0); 	// expected result = sine function normalized to [0-1]
 				
 				//You can also use this format for training input:
-				//net.trainAnnOnCase(new Double[]{1.0,1.0,0.0}, new Double[]{1.0,0.0});
+				//net.trainAnnOnCase(new Double[]{1.0f}, new Double[]{1.0f});
 				
 				/*
 				if(Ann.lastRunError*100 < targetError)
@@ -37,6 +38,8 @@ public class Main
 					System.out.println("Error <"+targetError+"% after "+i+" runs.\n");
 					break;
 				}*/
+				if(i % (runs/25) == 0)
+					System.out.printf("   %.1f %%\r",(i/(float)runs)*100);
 			}
 
 			//print result (plot with: http://www.alcula.com/calculators/statistics/scatter-plot/)
@@ -47,7 +50,7 @@ public class Main
 				System.out.println();
 			}	
 			
-			System.out.println("Last run error: "+Ann.lastRunError*100+"%");
+			System.out.printf("Last run error: %.4f %%",Ann.lastRunError*100);
 		}
 		catch (InputOutputSizeException e)
 		{
