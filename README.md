@@ -1,6 +1,6 @@
 # GenericANN
 Pure JAVA artificial neural network implementation.
-This program is not very well optimized at its current state, but it should be enough to create and train some simple networks.
+This program is not very well optimized in its current state, but it should be enough to create and train some simple networks.
 
 
 ## Usage

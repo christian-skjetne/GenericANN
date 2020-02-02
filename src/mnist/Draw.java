@@ -9,11 +9,17 @@ import java.awt.event.MouseAdapter;
 
 class Draw{
 
-    public static void main(String args[]){Draw d = new Draw(null);}
+    public static void main(String args[]){new Draw(null);}
 
     Main mnist;
     DrawCanvas canvas;
+    JLabel guessLabel;
 
+    /**
+     * Creates a window for the user to draw digits in.
+     * 
+     * @param mnist reference to the mnist class where the ANN is.
+     */
     public Draw(Main mnist)
     {
         this.mnist = mnist;
@@ -37,38 +43,45 @@ class Draw{
                 guess();
             }
        });
+       guessLabel = new JLabel("Guess: ?");
        buttonPanel.add(clearButton);
        buttonPanel.add(guessButton);
+       buttonPanel.add(guessLabel);
        frame.getContentPane().add(BorderLayout.CENTER,canvas); 
        frame.getContentPane().add(BorderLayout.SOUTH,buttonPanel); 
        frame.pack();
        frame.setVisible(true);
     }
 
+    /**
+     * Performs a guess of the digit drawn in the window
+     */
     public void guess()
     {
-        mnist.guess(canvas.img);
+        guessLabel.setText("Guess: "+mnist.guess(canvas.img));
     }
 }
 
+/**
+ * Canvas to draw on
+ */
 class DrawCanvas extends JPanel
 {
-
-    double[] img;//  = new Double[280][280];
+    private static final long serialVersionUID = -2359907577391270042L;
+    
+    double[] img;
 
     public DrawCanvas()
     {
-        // Initialize img here.
-        //this.addMouseListener(this);
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                moveSquare(e.getX(),e.getY());
+                paintSquare(e.getX(),e.getY());
             }
         });
 
         addMouseMotionListener(new MouseAdapter() {
             public void mouseDragged(MouseEvent e) {
-                moveSquare(e.getX(),e.getY());
+                paintSquare(e.getX(),e.getY());
             }
         });
         
@@ -81,13 +94,17 @@ class DrawCanvas extends JPanel
         repaint();
     }
 
-    protected void moveSquare(int x, int y) 
+    protected void paintSquare(int x, int y) 
     {
-        //int offset = 28*y+x;
-        img[(x/10)+28*(y/10)] = 1.;
-        if((x-10)/10 > 0) img[((x-10)/10)+28*(y/10)] = 1.;
-        if((y-10)/10 > 0) img[(x/10)+28*((y-10)/10)] = 1.;
-        repaint();
+        //int offset = 28*y+x; // convert from x,y to a linear array
+        try 
+        {
+            img[(x/10)+28*(y/10)] = 1.; // The image is scaled down to 28x28
+            if((x-10)/10 > 0) img[((x-10)/10)+28*(y/10)] = 1.;
+            if((y-10)/10 > 0) img[(x/10)+28*((y-10)/10)] = 1.;
+            repaint();
+        }
+        catch(ArrayIndexOutOfBoundsException e){}
 	} 
 
     public Dimension getPreferredSize() 
@@ -105,12 +122,12 @@ class DrawCanvas extends JPanel
             {
                 if(img[(x/10)+28*(y/10)] > 0) 
                 {
-                    g.setColor(Color.BLACK);//new Color(255-img[x][y],255-img[x][y],255-img[x][y]));
+                    g.setColor(Color.BLACK);
                     g.fillRect(x, y, 10, 10);
                 }
             }
         }
         // Draw Text
-        //g.drawString("This is my custom Panel!",10,20);
+        g.drawString("Draw a digit here",5,20);
     }
 }
