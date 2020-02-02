@@ -24,6 +24,7 @@ net.trainInput(0.2, 0.6, 0.1);
 // number of arguments has to match the number of output nodes in the network
 net.trainOutput((Math.sin(input)+1)/2.0); 	
 ```	
+
 Alternative way to input training data. 
 First argument array is the normalized input and the second is the corresponding normalized expected output.
 
@@ -43,4 +44,19 @@ Arguments are the normalized input values to the network (can either be an array
 ```java
 Double output = net.getAnnRes(0.2, 0.6, 0.1);
 ```	
+
+## Examples
+
+There are currently two examples included
+
+## Simple example
+
+Under [/src/annTest/Main.java](/src/annTest/Main.java) you can find a simple example that trains an ANN to estimate the function Sin(x)
+
+## More complex example
+
+In the  [/src/mnist/](/src/mnist/) folder you can find an example that trains an ANN to read hand written digits. 
+It uses the [Mnist](http://yann.lecun.com/exdb/mnist/) dataset to train and test. After the training and testing is done (warning: training takes a fair bit of time) a GUI windwow pops up where you can use the mouse/touchscreen to write digits and make the ANN you just trained guess what you have wirtten.
+
+
 
