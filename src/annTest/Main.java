@@ -18,7 +18,6 @@ public class Main
 		{
 			System.out.println("Starting training...");
 			long startTime = System.currentTimeMillis();
-			double targetError = 0.0001;
 			double input;
 			int runs = 1000000;
 			for (int i = 0; i < runs; i++)
@@ -27,23 +26,12 @@ public class Main
 				net.trainInput(input/(Math.PI*2)); 			// normalize input to [0-1]
 				net.trainOutput((Math.sin(input)+1)/2.0); 	// expected result = sine function normalized to [0-1]
 				
-				//You can also use this format for training input:
-				//net.trainAnnOnCase(new Double[]{1.0f}, new Double[]{1.0f});
-				
-				/*
-				if(Ann.lastRunError*100 < targetError)
-				{
-					// Using this kind of break point is not always a good idea because 
-					// the ann can randomly get low error on one specific input, but it may not have converged yet
-					// A gliding average can be used to mitigate this somewhat.
-					System.out.println("Error <"+targetError+"% after "+i+" runs.\n");
-					break;
-				}*/
 				if(i % (runs/25) == 0)
 					System.out.printf("   %.1f %%\r",(i/(float)runs)*100);
 			}
 			float trainTime = (float)(System.currentTimeMillis() - startTime)/1000.f;
 			System.out.printf("Training done! Time elapsed: %.2f secs\n",trainTime);
+			System.out.printf("Last run error: %.4f %%",Ann.lastRunError*100);
 			
 
 			//print result (plot with: http://www.alcula.com/calculators/statistics/scatter-plot/)
@@ -52,7 +40,7 @@ public class Main
 				System.out.printf("%.2f,",i);
 				net.runMinAnn(2, i/(Math.PI*2));
 			}	
-			System.out.printf("Last run error: %.4f %%",Ann.lastRunError*100);
+			
 			
 		}
 		catch (InputOutputSizeException e)
