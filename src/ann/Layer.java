@@ -28,7 +28,7 @@ public class Layer
 		this.name = name;
 	}
 
-	public void updateDeltaValues(Double[] target)
+	public void updateDeltaValues(double[] target)
 	{
 		//clear old delta values Could this be done on the fly??
 		//sa = nodes.size();

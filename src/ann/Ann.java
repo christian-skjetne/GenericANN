@@ -4,8 +4,10 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 public class Ann
@@ -45,7 +47,7 @@ public class Ann
 	 * @param output desired output data values.
 	 * @throws InputOutputSizeException output data size is different from the number of output nodes.
 	 */
-	private void backProp(Double[] output) throws InputOutputSizeException
+	private void backProp(double[] output) throws InputOutputSizeException
 	{
 		if(outputLayer.nodes.size() != output.length)
 			throw new InputOutputSizeException("Size of output data["+output.length+"] is different from the number of output nodes["+outputLayer.nodes.size()+"]");
@@ -215,7 +217,7 @@ public class Ann
 	public void printAnnRes(int decimals)
 	{
 		System.out.print("ANN output: ");
-		for (Node n : layers.get(layers.size()-1).nodes)
+		for (Node n : outputLayer.nodes)
 		{
 			System.out.printf("[%."+decimals+"f] ",n.output);
 		}
@@ -229,10 +231,42 @@ public class Ann
 	 */
 	public void printMinimumAnnRes(int decimals)
 	{
-		for (Node n : layers.get(layers.size()-1).nodes)
+		for (Node n : outputLayer.nodes)
 		{
 			System.out.printf("%."+decimals+"f ",n.output);
 		}
+	}
+
+	public double[] getAnnRes(double... input) throws InputOutputSizeException
+	{
+		feedAnn(input);
+		return getAnnOut();
+	}
+
+	/**
+	 * Returns the last values stored in the output nodes of the network.
+	 */
+	public double[] getAnnOut()
+	{
+		double[] res = new double[outputLayer.nodes.size()];
+		for (int i = 0; i<outputLayer.nodes.size(); i++)
+		{
+			res[i] = outputLayer.nodes.get(i).output;
+		}
+		return res;
+	}
+
+	/**
+	 * Returns a list of the last values stored in the output nodes of the network.
+	 */
+	public ArrayList<Double> getAnnOutList()
+	{
+		ArrayList<Double> res = new ArrayList<Double>();
+		for (Node n : outputLayer.nodes) 
+		{
+			res.add(n.output);
+		}
+		return res;
 	}
 
 	/**
@@ -240,7 +274,7 @@ public class Ann
 	 * @param ds output data set.
 	 * @throws InputOutputSizeException output data size is different from the number of output nodes.
 	 */
-	private void doBackPropagation(Double... ds) throws InputOutputSizeException
+	private void doBackPropagation(double... ds) throws InputOutputSizeException
 	{
 		this.backProp(ds);
 	}
@@ -252,7 +286,7 @@ public class Ann
 	 * @param output the desired output data for this training case
 	 * @throws InputOutputSizeException input/output data size is different from the number of input/output nodes.
 	 */
-	public void trainAnnOnCase(Double[] input,Double[] output) throws InputOutputSizeException
+	public void trainAnnOnCase(double[] input,double[] output) throws InputOutputSizeException
 	{
 
 		//CASE
@@ -267,7 +301,7 @@ public class Ann
 	 * @param input the input data for this training case
 	 * @throws InputOutputSizeException input/output data size is different from the number of input/output nodes.
 	 */
-	public void trainInput(Double... input) throws InputOutputSizeException
+	public void trainInput(double... input) throws InputOutputSizeException
 	{
 		feedAnn(input);
 	}
@@ -279,7 +313,7 @@ public class Ann
 	 * @param output the desired output data for this training case
 	 * @throws InputOutputSizeException input/output data size is different from the number of input/output nodes.
 	 */
-	public void trainOutput(Double... output) throws InputOutputSizeException
+	public void trainOutput(double... output) throws InputOutputSizeException
 	{
 		doBackPropagation(output);
 	}
@@ -291,7 +325,7 @@ public class Ann
 	 * @param input the input for the network.
 	 * @throws InputOutputSizeException input data size is different from the number of input nodes.
 	 */
-	private void feedAnn(Double... input) throws InputOutputSizeException
+	private void feedAnn(double... input) throws InputOutputSizeException
 	{
 		if(inputLayer.nodes.size() != input.length)
 			throw new InputOutputSizeException("Size of input data["+input.length+"] is different from the number of input nodes["+inputLayer.nodes.size()+"]");
@@ -319,7 +353,7 @@ public class Ann
 	 * @param input the input for the network.
 	 * @throws InputOutputSizeException input data size is different from the number of input nodes.
 	 */
-	public void runAnn(int decimals, Double... input) throws InputOutputSizeException
+	public void runAnn(int decimals, double... input) throws InputOutputSizeException
 	{
 		feedAnn(input);
 		printAnnRes(decimals);
@@ -331,7 +365,7 @@ public class Ann
 	 * @param input the input for the network.
 	 * @throws InputOutputSizeException input data size is different from the number of input nodes.
 	 */
-	public void runMinAnn(int decimals, Double... input) throws InputOutputSizeException
+	public void runMinAnn(int decimals, double... input) throws InputOutputSizeException
 	{
 		feedAnn(input);
 		printMinimumAnnRes(decimals);
@@ -363,5 +397,17 @@ public class Ann
 		return new String(buffer);
 	}
 
-	
+	public static String printDoubleArray(int decimals, double... da)
+	{
+		NumberFormat nf = NumberFormat.getInstance(Locale.US);
+		nf.setMaximumFractionDigits(decimals);
+
+		String s = "[";
+		for (double d : da) 
+		{
+			s += nf.format(d)+", ";
+		}
+		s += "]";
+		return s.replace(", ]", "]");
+	}
 }

@@ -17,6 +17,7 @@ public class Main
 		try
 		{
 			System.out.println("Starting training...");
+			long startTime = System.currentTimeMillis();
 			double targetError = 0.0001;
 			double input;
 			int runs = 1000000;
@@ -41,20 +42,23 @@ public class Main
 				if(i % (runs/25) == 0)
 					System.out.printf("   %.1f %%\r",(i/(float)runs)*100);
 			}
+			float trainTime = (float)(System.currentTimeMillis() - startTime)/1000.f;
+			System.out.printf("Training done! Time elapsed: %.2f secs\n",trainTime);
+			
 
 			//print result (plot with: http://www.alcula.com/calculators/statistics/scatter-plot/)
 			for(double i=0;i<Math.PI*2;i+=0.1)
 			{
 				System.out.printf("%.2f,",i);
 				net.runMinAnn(2, i/(Math.PI*2));
-				System.out.println();
 			}	
-			
 			System.out.printf("Last run error: %.4f %%",Ann.lastRunError*100);
+			
 		}
 		catch (InputOutputSizeException e)
 		{
 			e.printStackTrace();
 		}
+
 	}
 }
