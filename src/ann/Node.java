@@ -14,6 +14,9 @@ public class Node
 	ArrayList<Arc> inArcs = null;
 	ArrayList<Arc> outArcs = null;
 
+	int itr = 0;
+	int siz = 0;
+
 	public Node(Layer parent)
 	{
 		parentLayer = parent;
@@ -24,10 +27,11 @@ public class Node
 		activation = 0;
 		if(inArcs == null) getInArcs();
 		//Node pn = null;
-		for(Arc a : inArcs)
+		siz = inArcs.size();
+		for(itr = 0; itr<siz; itr++)
 		{
 			//pn = a.preNode;
-			activation = activation + (a.currentWeight * a.preNode.output);
+			activation = activation + (inArcs.get(itr).currentWeight * inArcs.get(itr).preNode.output);
 		}
 		
 		//System.out.println("NodeData: "+this+" "+sigmoid(s)+" pren:"+pn);
@@ -68,8 +72,9 @@ public class Node
 		return outArcs;
 	}
 
-	public static double sigmoid(double x) {
-		return (1/( 1 + Math.pow(Math.E,(-1*x))));
+	public static double sigmoid(double x) 
+	{
+		return (1/( 1 + (double)Math.pow(Math.E,(-1*x))));
 	}
 
 	public double derivative(double v)

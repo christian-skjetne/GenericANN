@@ -20,6 +20,11 @@ public class Link
 	final static int STOCHASTICTOPOLOGY = 3; 
 	final static int TRIANGULARTOPOLOGY = 4; 
 
+	int ia = 0;
+	int ib = 0;
+	int sa = 0;
+	int sb = 0;
+
 	public Link(Layer pre, Layer post,double weightMin,double weightMax,int topology,double topArg)
 	{
 		presynapticLayer = pre;
@@ -27,11 +32,13 @@ public class Link
 		//full
 		if(topology == FULLTOPOLOGY)
 		{
-			for (Node preN : presynapticLayer.nodes)
+			sa = presynapticLayer.nodes.size();
+			sb = postsynapticLayer.nodes.size();
+			for (ia = 0; ia<sa; ia++) //(Node preN : presynapticLayer.nodes)
 			{
-				for (Node postN : postsynapticLayer.nodes)
+				for (ib = 0; ib<sb; ib++) //(Node postN : postsynapticLayer.nodes)
 				{
-					arcs.add(new Arc(preN, postN, getRandom()/*randRange(weightMin, weightMax)*/, this));
+					arcs.add(new Arc(presynapticLayer.nodes.get(ia), postsynapticLayer.nodes.get(ib), getRandom()/*randRange(weightMin, weightMax)*/, this));
 				}
 			}
 		}
@@ -49,24 +56,28 @@ public class Link
 		//stochastic
 		else if(topology == STOCHASTICTOPOLOGY)
 		{
-			for (Node preN : presynapticLayer.nodes)
+			sa = presynapticLayer.nodes.size();
+			sb = postsynapticLayer.nodes.size();
+			for (ia = 0; ia<sa; ia++) //(Node preN : presynapticLayer.nodes)
 			{
-				for (Node postN : postsynapticLayer.nodes)
+				for (ib = 0; ib<sb; ib++) //(Node postN : postsynapticLayer.nodes)
 				{
 					if(Math.random() < topArg)
-						arcs.add(new Arc(preN, postN, randRange(weightMin, weightMax), this));
+						arcs.add(new Arc(presynapticLayer.nodes.get(ia), postsynapticLayer.nodes.get(ib), randRange(weightMin, weightMax), this));
 				}
 			}
 		}
 		//triangular
 		else if(topology == TRIANGULARTOPOLOGY)
 		{
-			for (Node preN : presynapticLayer.nodes)
+			sa = presynapticLayer.nodes.size();
+			sb = postsynapticLayer.nodes.size();
+			for (ia = 0; ia<sa; ia++) //(Node preN : presynapticLayer.nodes)
 			{
-				for (Node postN : postsynapticLayer.nodes)
+				for (ib = 0; ib<sb; ib++) //(Node postN : postsynapticLayer.nodes)
 				{
-					if(postsynapticLayer.nodes.indexOf(postN) != presynapticLayer.nodes.indexOf(preN))
-						arcs.add(new Arc(preN, postN, randRange(weightMin, weightMax), this));
+					if(postsynapticLayer.nodes.indexOf(postsynapticLayer.nodes.get(ib)) != presynapticLayer.nodes.indexOf(presynapticLayer.nodes.get(ia)))
+						arcs.add(new Arc(presynapticLayer.nodes.get(ia), postsynapticLayer.nodes.get(ib), randRange(weightMin, weightMax), this));
 				}
 			}
 		}
@@ -79,9 +90,10 @@ public class Link
 
 	public void propagate()
 	{
-		for(Node n :postsynapticLayer.nodes)
+		sa = postsynapticLayer.nodes.size();
+		for(ia = 0; ia<sa; ia++) //(Node n :postsynapticLayer.nodes)
 		{
-			n.checkNode();
+			postsynapticLayer.nodes.get(ia).checkNode();
 		}
 	}
 
