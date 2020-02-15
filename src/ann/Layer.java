@@ -76,6 +76,9 @@ public class Layer
 		
 	}
 	
+	/**
+	 * TODO: need to connect hebbian(Arc arc) in Link.java instead of l.learningRate * arc.preNode.output * arc.postNode.deltaValue
+	 */
 	public void updateArcWeights()
 	{
 		sa = exitingLinks.size();
