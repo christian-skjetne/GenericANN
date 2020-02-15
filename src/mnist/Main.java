@@ -29,7 +29,7 @@ public class Main {
         // Lets train
         System.out.println("Lets start training..");
         // Number of times we run through the dataset. 
-        int trainingRuns = 7;
+        int trainingRuns = 10;
 
         double[] output = new double[]{0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
         try 

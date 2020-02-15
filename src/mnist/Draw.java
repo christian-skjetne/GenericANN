@@ -58,6 +58,35 @@ class Draw{
      */
     public void guess()
     {
+        int sumX = 0;
+        int num = 0;
+        int sumY = 0;
+        for (int i = 0; i < canvas.img.length; i++) 
+        {
+            if(canvas.img[i] > 0)
+            {
+                sumX += canvas.getX(i);
+                sumY += canvas.getY(i);
+                num++;
+            }
+        }
+        int avgX = sumX/num;
+        int avgY = sumY/num;
+        int moveX = (28/2)-avgX;
+        int moveY = (28/2)-avgY;
+        System.out.println(moveX+" "+moveY);
+
+        double[] oldCanv = canvas.img.clone();
+        canvas.clearCanvas();
+        for (int i = 0; i < canvas.img.length; i++) 
+        {
+            int x = canvas.getX(i);
+            int y = canvas.getY(i);
+            double val = DrawCanvas.getImgValue(oldCanv, x, y);
+            canvas.setImgValue(val, x+moveX, y+moveY);
+        }
+        canvas.repaint();
+
         guessLabel.setText("Guess: "+mnist.guess(canvas.img));
     }
 }
@@ -105,7 +134,36 @@ class DrawCanvas extends JPanel
             repaint();
         }
         catch(ArrayIndexOutOfBoundsException e){}
-	} 
+    } 
+    
+    public int getY(int arrayIndex)
+    {
+        return arrayIndex / 28;
+    }
+
+    public int getX(int arrayIndex)
+    {
+        return arrayIndex % 28;
+    }
+
+    public double getImgValue(int x, int y)
+    {
+        return img[28*y+x];
+    }
+
+    public static double getImgValue(double[] img, int x, int y)
+    {
+        return img[28*y+x];
+    }
+
+    public void setImgValue(double val, int x, int y)
+    {
+        try
+        {
+            img[28*y+x] = val;
+        }
+        catch(ArrayIndexOutOfBoundsException e){}
+    }
 
     public Dimension getPreferredSize() 
     {
