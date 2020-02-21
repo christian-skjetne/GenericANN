@@ -12,7 +12,7 @@ import java.util.Locale;
 
 public class Ann
 {
-	public ArrayList<Layer> layers = new ArrayList<Layer>();	
+	public Layer[] layers;// = new ArrayList<Layer>();	
 	HashMap<String, Layer> layerNames = new HashMap<String, Layer>();
 	private Layer inputLayer;
 	private Layer outputLayer;
@@ -49,14 +49,14 @@ public class Ann
 	 */
 	private void backProp(double[] output) throws InputOutputSizeException
 	{
-		if(outputLayer.nodes.size() != output.length)
-			throw new InputOutputSizeException("Size of output data["+output.length+"] is different from the number of output nodes["+outputLayer.nodes.size()+"]");
+		if(outputLayer.nodes.length != output.length)
+			throw new InputOutputSizeException("Size of output data["+output.length+"] is different from the number of output nodes["+outputLayer.nodes.length+"]");
 		
-		for (int i = layers.size()-1; i >= 0; i--)
+		for (int i = layers.length-1; i >= 0; i--)
 		{
 			//System.out.println("START BACK PROP: layer="+i);
-			layers.get(i).updateDeltaValues(output);
-			layers.get(i).updateArcWeights();
+			layers[i].updateDeltaValues(output);
+			layers[i].updateArcWeights();
 		}
 	}
 
@@ -124,11 +124,13 @@ public class Ann
 	 */
 	public void createNet(String file)
 	{
+		ArrayList<Layer> allLayers = new ArrayList<>();
 		for (String s : file.split("%"))
 		{
 			String entry = s.trim();
 			System.out.println("INPUT: \n"+s);
 			String[] data = entry.split("\n");
+			
 			if(data[0].startsWith("layer"))//new layer
 			{
 				System.out.println("New layer");
@@ -149,13 +151,14 @@ public class Ann
 						function = Integer.parseInt(d.replace("activation function=", ""));
 				}
 				Layer l = new Layer(name);
+				l.nodes = new Node[size];
 				for (int i = 0; i < size; i++)
 				{
-					l.nodes.add(new Node(l));
+					l.nodes[i] = new Node(l);
 				}
 				l.actFunction = function;
-				if(layers.size() == 0) inputLayer = l;
-				layers.add(l);
+				if(allLayers.size() == 0) inputLayer = l;
+				allLayers.add(l);
 				layerNames.put(name, l);
 			}
 			else if(data[0].startsWith("link"))
@@ -195,15 +198,17 @@ public class Ann
 				l.learningRate = learningRate;
 			}
 		}
-		outputLayer = layers.get(layers.size()-1);
+		outputLayer = allLayers.get(allLayers.size()-1);
+		layers = new Layer[allLayers.size()];
+		layers = allLayers.toArray(layers);
 		System.out.println("----------NETWORK CREATED----------");
 		for (Layer l : this.layers)
 		{
 			System.out.println("LAYER: "+l.name);
-			System.out.println("nodes: "+l.nodes.size());
+			System.out.println("nodes: "+l.nodes.length);
 			int edges = 0;
 			for(Link lnk : l.exitingLinks)
-				edges += lnk.arcs.size();
+				edges += lnk.arcs.length;
 			System.out.println("edges: "+edges);
 		}
 		System.out.println("");
@@ -248,10 +253,10 @@ public class Ann
 	 */
 	public double[] getAnnOut()
 	{
-		double[] res = new double[outputLayer.nodes.size()];
-		for (int i = 0; i<outputLayer.nodes.size(); i++)
+		double[] res = new double[outputLayer.nodes.length];
+		for (int i = 0; i<outputLayer.nodes.length; i++)
 		{
-			res[i] = outputLayer.nodes.get(i).output;
+			res[i] = outputLayer.nodes[i].output;
 		}
 		return res;
 	}
@@ -327,22 +332,22 @@ public class Ann
 	 */
 	private void feedAnn(double... input) throws InputOutputSizeException
 	{
-		if(inputLayer.nodes.size() != input.length)
-			throw new InputOutputSizeException("Size of input data["+input.length+"] is different from the number of input nodes["+inputLayer.nodes.size()+"]");
+		if(inputLayer.nodes.length != input.length)
+			throw new InputOutputSizeException("Size of input data["+input.length+"] is different from the number of input nodes["+inputLayer.nodes.length + "]");
 
 		for (int i = 0; i < input.length; i++)//get the number for the current input data/node.
 		{
-			inputLayer.nodes.get(i).inputToNode(input[i]);
+			inputLayer.nodes[i].inputToNode(input[i]);
 		}
 
 		//Start the input data propagation:
-		sa = this.layers.size();
+		sa = this.layers.length;
 		for (ia = 0; ia<sa; ia++) //(Layer lr : this.layers)
 		{
-			if(this.layers.get(ia).exitingLinks.size() == 0) break;//reached output
-			sb = this.layers.get(ia).exitingLinks.size();
+			if(this.layers[ia].exitingLinks.size() == 0) break;//reached output
+			sb = this.layers[ia].exitingLinks.size();
 			for (ib = 0; ib<sb; ib++) //(Link l : this.layers.get(ia).exitingLinks)
-				this.layers.get(ia).exitingLinks.get(ib).propagate();
+				this.layers[ia].exitingLinks.get(ib).propagate();
 
 		}
 	}

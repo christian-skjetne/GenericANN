@@ -6,7 +6,8 @@ import java.util.Random;
 public class Link
 {
 
-	public ArrayList<Arc> arcs = new ArrayList<Arc>();
+	//public ArrayList<Arc> arcs = new ArrayList<Arc>();
+	public Arc[] arcs; // = new ArrayList<Arc>();
 
 	final Random rand = new Random();
 	final int randomWeightMultiplier = 1;
@@ -32,13 +33,15 @@ public class Link
 		//full
 		if(topology == FULLTOPOLOGY)
 		{
-			sa = presynapticLayer.nodes.size();
-			sb = postsynapticLayer.nodes.size();
+			sa = presynapticLayer.nodes.length;
+			sb = postsynapticLayer.nodes.length;
+			arcs = new Arc[sa*sb];
+			int in = 0;
 			for (ia = 0; ia<sa; ia++) //(Node preN : presynapticLayer.nodes)
 			{
 				for (ib = 0; ib<sb; ib++) //(Node postN : postsynapticLayer.nodes)
 				{
-					arcs.add(new Arc(presynapticLayer.nodes.get(ia), postsynapticLayer.nodes.get(ib), getRandom()/*randRange(weightMin, weightMax)*/, this));
+					arcs[in++] = new Arc(presynapticLayer.nodes[ia], postsynapticLayer.nodes[ib], getRandom()/*randRange(weightMin, weightMax)*/, this);
 				}
 			}
 		}
@@ -46,40 +49,46 @@ public class Link
 		else if(topology == ONETONOETOPOLOGY)
 		{
 			//select the size of the smallest layer
-			int min = (pre.nodes.size() < post.nodes.size()) ? pre.nodes.size():post.nodes.size();
-
+			int min = (pre.nodes.length < post.nodes.length) ? pre.nodes.length:post.nodes.length;
+			arcs = new Arc[min];
 			for (int i = 0; i < min; i++)
 			{
-				arcs.add(new Arc(presynapticLayer.nodes.get(i), postsynapticLayer.nodes.get(i), randRange(weightMin, weightMax), this));
+				arcs[i] = new Arc(presynapticLayer.nodes[i], postsynapticLayer.nodes[i], randRange(weightMin, weightMax), this);
 			}
 		}
 		//stochastic
 		else if(topology == STOCHASTICTOPOLOGY)
 		{
-			sa = presynapticLayer.nodes.size();
-			sb = postsynapticLayer.nodes.size();
+			sa = presynapticLayer.nodes.length;
+			sb = postsynapticLayer.nodes.length;
+			ArrayList<Arc> newArcs = new ArrayList<>();
 			for (ia = 0; ia<sa; ia++) //(Node preN : presynapticLayer.nodes)
 			{
 				for (ib = 0; ib<sb; ib++) //(Node postN : postsynapticLayer.nodes)
 				{
 					if(Math.random() < topArg)
-						arcs.add(new Arc(presynapticLayer.nodes.get(ia), postsynapticLayer.nodes.get(ib), randRange(weightMin, weightMax), this));
+						newArcs.add(new Arc(presynapticLayer.nodes[ia], postsynapticLayer.nodes[ib], randRange(weightMin, weightMax), this));
 				}
 			}
+			arcs = new Arc[newArcs.size()];
+			arcs = (Arc[])newArcs.toArray();
 		}
 		//triangular
 		else if(topology == TRIANGULARTOPOLOGY)
 		{
-			sa = presynapticLayer.nodes.size();
-			sb = postsynapticLayer.nodes.size();
+			sa = presynapticLayer.nodes.length;
+			sb = postsynapticLayer.nodes.length;
+			ArrayList<Arc> newArcs = new ArrayList<>();
 			for (ia = 0; ia<sa; ia++) //(Node preN : presynapticLayer.nodes)
 			{
 				for (ib = 0; ib<sb; ib++) //(Node postN : postsynapticLayer.nodes)
 				{
-					if(postsynapticLayer.nodes.indexOf(postsynapticLayer.nodes.get(ib)) != presynapticLayer.nodes.indexOf(presynapticLayer.nodes.get(ia)))
-						arcs.add(new Arc(presynapticLayer.nodes.get(ia), postsynapticLayer.nodes.get(ib), randRange(weightMin, weightMax), this));
+					if(ib != ia)
+						newArcs.add(new Arc(presynapticLayer.nodes[ia], postsynapticLayer.nodes[ib], randRange(weightMin, weightMax), this));
 				}
 			}
+			arcs = new Arc[newArcs.size()];
+			arcs = (Arc[])newArcs.toArray();
 		}
 	}
 
@@ -90,10 +99,10 @@ public class Link
 
 	public void propagate()
 	{
-		sa = postsynapticLayer.nodes.size();
+		sa = postsynapticLayer.nodes.length;
 		for(ia = 0; ia<sa; ia++) //(Node n :postsynapticLayer.nodes)
 		{
-			postsynapticLayer.nodes.get(ia).checkNode();
+			postsynapticLayer.nodes[ia].checkNode();
 		}
 	}
 

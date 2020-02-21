@@ -1,6 +1,8 @@
 package mnist;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import ann.Ann;
 import ann.InputOutputSizeException;
@@ -24,14 +26,17 @@ public class Main {
         net = new Ann("src\\mnist\\annMnist.txt");
         
         // Load the training dataset
-        Mnist train = new Mnist("src\\mnist\\data\\train-images.idx3-ubyte", "src\\mnist\\data\\train-labels.idx1-ubyte");
+        Mnist train = new Mnist("src\\mnist\\data\\emnist-letters-train-images-idx3-ubyte.bin","src\\mnist\\data\\emnist-letters-train-labels-idx1-ubyte.bin");
+        //Mnist train = new Mnist("src\\mnist\\data\\train-images.idx3-ubyte.bin", "src\\mnist\\data\\train-labels.idx1-ubyte.bin");
 
         // Lets train
-        System.out.println("Lets start training..");
+        System.out.println("Lets start training.. (This is going to take a long time)");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        System.out.println("Training started at: "+LocalDateTime.now().format(formatter));
         // Number of times we run through the dataset. 
         int trainingRuns = 10;
 
-        double[] output = new double[]{0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+        double[] output = new double[27];//{0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
         try 
         {
             for (int i = 0; i < trainingRuns; i++) 
@@ -45,7 +50,7 @@ public class Main {
                     output[train.getImageLabel(img)] = 0.0;
                     sumError += Ann.lastRunError;
                 }
-                System.out.printf("Run:"+(i+1)+" Avg run error: %.4f %%\n",(sumError/train.numberOfImages)*100.);   
+                System.out.printf("Run:"+(i+1)+" of "+trainingRuns+". Avg run error: %.4f %% Time: "+LocalDateTime.now().format(formatter)+"\n",(sumError/train.numberOfImages)*100.);   
             }
         }
         catch(InputOutputSizeException e){e.printStackTrace();System.exit(1);}
@@ -53,13 +58,15 @@ public class Main {
         train = null; // use the GC to try to free some memory
 
         System.out.println("------Training Done-----");
+        System.out.println("Training ended at: "+LocalDateTime.now().format(formatter));
         System.out.println("Start testing");
 
         // Load the test dataset
-        Mnist test = new Mnist("src\\mnist\\data\\t10k-images.idx3-ubyte", "src\\mnist\\data\\t10k-labels.idx1-ubyte");
+        Mnist test = new Mnist("src\\mnist\\data\\emnist-letters-test-images-idx3-ubyte.bin","src\\mnist\\data\\emnist-letters-test-labels-idx1-ubyte.bin");
+        //Mnist test = new Mnist("src\\mnist\\data\\t10k-images.idx3-ubyte.bin", "src\\mnist\\data\\t10k-labels.idx1-ubyte.bin");
 
         System.out.println("Lets start TESTING..");
-        output = new double[]{0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+        output = new double[27];//{0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
         try 
         {
             int correct = 0;    // number of correct guesses

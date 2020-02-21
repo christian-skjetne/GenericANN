@@ -57,6 +57,7 @@ class Mnist
 
     public void printImage(int imageIndex) {
         System.out.println("label: " + getImageLabel(imageIndex));
+        System.out.println("label: " + (char)(getImageLabel(imageIndex)+'@'));
         for (int i = 0; i < dataSize; i++) 
         {
             if(getImageData(imageIndex)[i] > .5) 
@@ -72,10 +73,16 @@ class Mnist
     {
         try 
         {
-            Mnist r = new Mnist("src\\mnist\\data\\t10k-images.idx3-ubyte", "src\\mnist\\data\\t10k-labels.idx1-ubyte");
+            //Mnist r = new Mnist("src\\mnist\\data\\emnist-letters-train-images-idx3-ubyte","src\\mnist\\data\\emnist-letters-train-labels-idx1-ubyte");
+            //Mnist r = new Mnist("src\\mnist\\data\\t10k-images.idx3-ubyte", "src\\mnist\\data\\t10k-labels.idx1-ubyte");
+            Mnist r = new Mnist("src\\mnist\\data\\emnist-digits-test-images-idx3-ubyte","src\\mnist\\data\\emnist-digits-test-labels-idx1-ubyte");
+
             System.out.println("now: "+r.numberOfImages);
             r.printImage(r.numberOfImages-1);
             r.printImage(0);
+            r.printImage(1);
+            r.printImage(2);
+            r.printImage(3);
         } 
         catch (IOException e) 
         {

@@ -24,7 +24,7 @@ class Draw{
     {
         this.mnist = mnist;
 
-       JFrame frame = new JFrame("Draw a digit");
+       JFrame frame = new JFrame("Draw a letter or digit");
        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
        frame.setSize(300,300);
        canvas = new DrawCanvas();
@@ -86,8 +86,8 @@ class Draw{
             canvas.setImgValue(val, x+moveX, y+moveY);
         }
         canvas.repaint();
-
-        guessLabel.setText("Guess: "+mnist.guess(canvas.img));
+        int guess = mnist.guess(canvas.img);
+        guessLabel.setText("Guess: "+guess+" "+(char)(guess+'@'));
     }
 }
 
@@ -125,6 +125,10 @@ class DrawCanvas extends JPanel
 
     protected void paintSquare(int x, int y) 
     {
+        int a=x;
+        int b=y;
+        x=b;
+        y=a;
         //int offset = 28*y+x; // convert from x,y to a linear array
         try 
         {
@@ -178,14 +182,16 @@ class DrawCanvas extends JPanel
         {
             for (int y=0;y<getPreferredSize().height;y+=10)
             {
+                int a=x;
+                int b=y;
                 if(img[(x/10)+28*(y/10)] > 0) 
                 {
                     g.setColor(Color.BLACK);
-                    g.fillRect(x, y, 10, 10);
+                    g.fillRect(b, a, 10, 10);
                 }
             }
         }
         // Draw Text
-        g.drawString("Draw a digit here",5,20);
+        g.drawString("Draw a letter or a digit here",5,20);
     }
 }

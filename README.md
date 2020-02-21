@@ -55,8 +55,8 @@ Under [/src/annTest/Main.java](/src/annTest/Main.java) you can find a simple exa
 
 ## More complex example
 
-In the  [/src/mnist/](/src/mnist/) folder you can find an example that trains an ANN to read hand written digits. 
-It uses the [Mnist](http://yann.lecun.com/exdb/mnist/) dataset to train and test. After the training and testing is done (warning: training takes a fair bit of time) a GUI window pops up where you can use the mouse/touchscreen to write digits and make the ANN you just trained guess what you have wirtten.
+In the  [/src/mnist/](/src/mnist/) folder you can find an example that trains an ANN to read hand written letters and digits. 
+It uses the [Emnist](https://www.nist.gov/itl/products-and-services/emnist-dataset) dataset to train and test. After the training and testing is done (warning: training takes a long time) a GUI window pops up where you can use the mouse/touchscreen to write digits and letters and make the ANN you just trained guess what you have written.
 
 
 
