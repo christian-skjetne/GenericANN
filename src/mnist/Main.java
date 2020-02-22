@@ -52,8 +52,7 @@ public class Main {
                                 (img / (float) train.numberOfImages) * 100);
                 }
                 float trainTime = (float) (System.currentTimeMillis() - startTime) / 1000.f;
-                System.out.printf(
-                        "Run:" + (i + 1) + " of " + trainingRuns
+                System.out.printf("Run:" + (i + 1) + " of " + trainingRuns
                                 + ". Avg run error: %.4f %% Time: %.0f mins %2.0f secs\n",
                         (sumError / train.numberOfImages) * 100., trainTime / 60.f, trainTime % 60);
             }

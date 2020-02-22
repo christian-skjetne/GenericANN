@@ -37,7 +37,7 @@ public class Main
 			//print result (plot with: http://www.alcula.com/calculators/statistics/scatter-plot/)
 			for(double i=0;i<Math.PI*2;i+=0.1)
 			{
-				System.out.printf("%.2f,",i);
+				System.out.printf("\n%.2f,",i);
 				net.runMinAnn(2, i/(Math.PI*2));
 			}	
 			
