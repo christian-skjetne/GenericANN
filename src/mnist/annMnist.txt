@@ -13,11 +13,17 @@ activation function=1
 %layer
 name=hidden2
 type=1
-size=200
+size=100
 activation function=1
 
 %layer
 name=hidden3
+type=1
+size=100
+activation function=1
+
+%layer
+name=hidden4
 type=1
 size=100
 activation function=1
@@ -53,7 +59,7 @@ post layer=hidden2
 topology=1
 top arg=0
 learning rule=hebbian
-learning rate=0.5
+learning rate=0.6
 min weight=0
 max weight=0
 
@@ -63,12 +69,22 @@ post layer=hidden3
 topology=1
 top arg=0
 learning rule=hebbian
-learning rate=0.5
+learning rate=0.7
 min weight=0
 max weight=0
 
 %link
 pre layer=hidden3
+post layer=hidden4
+topology=1
+top arg=0
+learning rule=hebbian
+learning rate=0.8
+min weight=0
+max weight=0
+
+%link
+pre layer=hidden4
 post layer=output
 topology=1
 top arg=0

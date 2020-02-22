@@ -19,7 +19,7 @@ public class Main
 			System.out.println("Starting training...");
 			long startTime = System.currentTimeMillis();
 			double input;
-			int runs = 1000000;
+			int runs = 10000000;
 			for (int i = 0; i < runs; i++)
 			{
 				input = Math.random()*Math.PI*2; 			// input = random values from [0-4PI]
@@ -31,7 +31,7 @@ public class Main
 			}
 			float trainTime = (float)(System.currentTimeMillis() - startTime)/1000.f;
 			System.out.printf("Training done! Time elapsed: %.2f secs\n",trainTime);
-			System.out.printf("Last run error: %.4f %%",Ann.lastRunError*100);
+			System.out.printf("Last run error: %.4f %%\n",Ann.lastRunError*100);
 			
 
 			//print result (plot with: http://www.alcula.com/calculators/statistics/scatter-plot/)

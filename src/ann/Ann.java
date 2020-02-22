@@ -8,10 +8,14 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class Ann
 {
+	public static ExecutorService calcService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
 	public Layer[] layers;// = new ArrayList<Layer>();	
 	HashMap<String, Layer> layerNames = new HashMap<String, Layer>();
 	private Layer inputLayer;
@@ -374,6 +378,20 @@ public class Ann
 	{
 		feedAnn(input);
 		printMinimumAnnRes(decimals);
+	}
+
+	public void combine(Ann other)
+	{
+		for (int layer = 0; layer < layers.length; layer++) 
+		{
+			for (int link = 0; link < layers[layer].exitingLinks.size(); link++) 
+			{
+				for (int arc = 0; arc < layers[layer].exitingLinks.get(link).arcs.length; arc++) 
+				{
+					this.layers[layer].exitingLinks.get(link).arcs[arc].currentWeight = (this.layers[layer].exitingLinks.get(link).arcs[arc].currentWeight + other.layers[layer].exitingLinks.get(link).arcs[arc].currentWeight)/2.;
+				}
+			}
+		}
 	}
 
 	/**

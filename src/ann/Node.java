@@ -11,8 +11,10 @@ public class Node
 	double deltaValue;
 	double prevOutput;
 	double activation = 0;
-	ArrayList<Arc> inArcs = null;
-	ArrayList<Arc> outArcs = null;
+	Arc[] inArcs;
+	Arc[] outArcs;
+	//ArrayList<Arc> inArcs = null;
+	//ArrayList<Arc> outArcs = null;
 
 	int itr = 0;
 	int siz = 0;
@@ -27,11 +29,11 @@ public class Node
 		activation = 0;
 		if(inArcs == null) getInArcs();
 		//Node pn = null;
-		siz = inArcs.size();
+		siz = inArcs.length;
 		for(itr = 0; itr<siz; itr++)
 		{
 			//pn = a.preNode;
-			activation = activation + (inArcs.get(itr).currentWeight * inArcs.get(itr).preNode.output);
+			activation = activation + (inArcs[itr].currentWeight * inArcs[itr].preNode.output);
 		}
 		
 		//System.out.println("NodeData: "+this+" "+sigmoid(s)+" pren:"+pn);
@@ -44,31 +46,35 @@ public class Node
 		output = v;
 	}
 	
-	public ArrayList<Arc> getInArcs()
+	public Arc[] getInArcs() //ArrayList<Arc> getInArcs()
 	{
-		inArcs = new ArrayList<Arc>();
+		ArrayList<Arc> inA = new ArrayList<Arc>();
 		for(Link l : this.parentLayer.enteringLinks)
 		{
 			for (Arc arc : l.arcs)
 			{
-				if(arc.postNode == this && !inArcs.contains(arc))
-					inArcs.add(arc);
+				if(arc.postNode == this && !inA.contains(arc))
+					inA.add(arc);
 			}
 		}
+		inArcs = new Arc[inA.size()];
+		inArcs = inA.toArray(inArcs);
 		return inArcs;
 	}
 
-	public ArrayList<Arc> getOutArcs()
+	public Arc[] getOutArcs()
 	{
-		outArcs = new ArrayList<Arc>();
+		ArrayList<Arc> outAs = new ArrayList<Arc>();
 		for(Link l : this.parentLayer.exitingLinks)
 		{
 			for (Arc arc : l.arcs)
 			{
-				if(arc.preNode == this && !outArcs.contains(arc))
-					outArcs.add(arc);
+				if(arc.preNode == this && !outAs.contains(arc))
+					outAs.add(arc);
 			}
 		}
+		outArcs = new Arc[outAs.size()];
+		outArcs = outAs.toArray(outArcs);
 		return outArcs;
 	}
 

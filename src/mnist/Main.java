@@ -9,9 +9,9 @@ import ann.InputOutputSizeException;
 
 public class Main {
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         try {
-           new Main();
+            new Main();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -23,39 +23,44 @@ public class Main {
     public Main() throws IOException 
     {
         // init the Neural network
-        net = new Ann("src\\mnist\\annMnist.txt");
-        
-        // Load the training dataset
-        Mnist train = new Mnist("src\\mnist\\data\\emnist-letters-train-images-idx3-ubyte.bin","src\\mnist\\data\\emnist-letters-train-labels-idx1-ubyte.bin");
-        //Mnist train = new Mnist("src\\mnist\\data\\train-images.idx3-ubyte.bin", "src\\mnist\\data\\train-labels.idx1-ubyte.bin");
+        net = new Ann("src\\mnist\\annMnist2.txt");
 
+        // Load the training dataset
+        final Mnist train = new Mnist("src\\mnist\\data\\emnist-letters-train-images-idx3-ubyte.bin",
+                "src\\mnist\\data\\emnist-letters-train-labels-idx1-ubyte.bin");
+        
         // Lets train
         System.out.println("Lets start training.. (This is going to take a long time)");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        System.out.println("Training started at: "+LocalDateTime.now().format(formatter));
-        // Number of times we run through the dataset. 
+        System.out.println("Training started at: " + LocalDateTime.now().format(formatter));
+        // Number of times we run through the dataset.
         int trainingRuns = 10;
 
-        double[] output = new double[27];//{0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
-        try 
-        {
-            for (int i = 0; i < trainingRuns; i++) 
-            {
+        double[] output = new double[27];// {0.,0.,0.,0.,0.,0.,0.,0.,0.,0.};
+        try {
+            for (int i = 0; i < trainingRuns; i++) {
                 double sumError = 0;
-                for (int img = 0; img<train.numberOfImages; img++)
-                {
-                    output[train.getImageLabel(img)] = 1.0; 
-                    net.trainInput(train.getImageData(img)); 
+                long startTime = System.currentTimeMillis();
+                for (int img = 0; img < train.numberOfImages; img++) {
+                    output[train.getImageLabel(img)] = 1.0;
+                    net.trainInput(train.getImageData(img));
                     net.trainOutput(output);
                     output[train.getImageLabel(img)] = 0.0;
                     sumError += Ann.lastRunError;
+                    if (img % (train.numberOfImages / 25) == 0)
+                        System.out.printf("  Current run: %.1f %%\r",
+                                (img / (float) train.numberOfImages) * 100);
                 }
-                System.out.printf("Run:"+(i+1)+" of "+trainingRuns+". Avg run error: %.4f %% Time: "+LocalDateTime.now().format(formatter)+"\n",(sumError/train.numberOfImages)*100.);   
+                float trainTime = (float) (System.currentTimeMillis() - startTime) / 1000.f;
+                System.out.printf(
+                        "Run:" + (i + 1) + " of " + trainingRuns
+                                + ". Avg run error: %.4f %% Time: %.0f mins %2.0f secs\n",
+                        (sumError / train.numberOfImages) * 100., trainTime / 60.f, trainTime % 60);
             }
+        } catch (InputOutputSizeException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
-        catch(InputOutputSizeException e){e.printStackTrace();System.exit(1);}
-
-        train = null; // use the GC to try to free some memory
 
         System.out.println("------Training Done-----");
         System.out.println("Training ended at: "+LocalDateTime.now().format(formatter));

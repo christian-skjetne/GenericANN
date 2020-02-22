@@ -74,7 +74,7 @@ class Draw{
         int avgY = sumY/num;
         int moveX = (28/2)-avgX;
         int moveY = (28/2)-avgY;
-        System.out.println(moveX+" "+moveY);
+        //System.out.println(moveX+" "+moveY);
 
         double[] oldCanv = canvas.img.clone();
         canvas.clearCanvas();
@@ -87,7 +87,7 @@ class Draw{
         }
         canvas.repaint();
         int guess = mnist.guess(canvas.img);
-        guessLabel.setText("Guess: "+guess+" "+(char)(guess+'@'));
+        guessLabel.setText("\nGuess: "+guess+" "+(char)(guess+'@'));
     }
 }
 
